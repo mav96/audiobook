@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Audiobook server{% endblock %}
+
+{% block content %}
+    <p>Which book would you like listening?</p>
+    {% if books %}
+        <p>Here {{ books|length }} book{{ books|pluralize }}.</p>
+            <ul>
+                {% for book in books %}
+                <li>
+                <a href="{{ host_url }}/{{ book.id }}"> {{ book.title }} </a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No books.</p>
+        {% endif %}
+{% endblock %}
