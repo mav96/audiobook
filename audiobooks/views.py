@@ -11,7 +11,7 @@ import os
 class HomePageView(TemplateView):
     def get(self, request, **kwargs):
         books = AudioBook.objects.all()
-        return render(request, 'index.html',
+        return render(request, 'index1.html',
                 {'books': books, 'host_url': "%s://%s/listen" % ('https' if request.is_secure() else 'http', request.get_host())})
 
 
