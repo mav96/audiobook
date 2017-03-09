@@ -12,7 +12,8 @@ class HomePageView(TemplateView):
     def get(self, request, **kwargs):
         books = AudioBook.objects.all()
         return render(request, 'index.html',
-                {'books': books, 'host_url': "%s://%s/listen" % ('https' if request.is_secure() else 'http', request.get_host())})
+                      {'books': books,
+                       'host_url': "%s://%s/listen" % ('https' if request.is_secure() else 'http', request.get_host())})
 
 
 class Search_form(TemplateView):
@@ -34,7 +35,8 @@ class Search(TemplateView):
 class Listen(TemplateView):
     def get(self, request, **kwargs):
         book_id = kwargs.get('book_id', None)
-        url_list = ["%s://%s/mp3/%s" % ('https' if request.is_secure() else 'http', request.get_host(), url['id']) for url in AudioFile.objects.filter(book_id=1).values('id')]
+        url_list = ["%s://%s/mp3/%s" % ('https' if request.is_secure() else 'http', request.get_host(), url['id']) for
+                    url in AudioFile.objects.filter(book_id=book_id).values('id')]
         return render(request, 'listen.html', {'url_list': url_list})
 
 
@@ -49,5 +51,3 @@ class Mp3(TemplateView):
         response = HttpResponse(FileWrapper(mp3file), content_type='application/mp3')
         response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(file_name)
         return response
-
-

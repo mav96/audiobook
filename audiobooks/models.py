@@ -29,6 +29,9 @@ class AudioBook(models.Model):
     authors = models.ManyToManyField(Author)
     genre = models.ForeignKey(Genre, blank=True, null=True)
     language = models.ForeignKey(Language, blank=True, null=True)
+    torrent_hash = models.CharField(max_length=100, blank=True, null=True)
+    torrent_status = models.CharField(max_length=100, default="no") # yes/no/ready/downloading...
+    to_listen = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

@@ -25,7 +25,7 @@ SECRET_KEY = 'x*l*jmdjvt4wff4w7g016ya8dq!a5mb0#76g_xw-f=!#1)!1t#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.88.220', 'localhost',]
 
 
 # Application definition
@@ -79,8 +79,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'audiobooks',
-        'USER': 'myprojectuser',
-        'PASSWORD': 'password',
+        'USER': 'super',
+        'PASSWORD': '340104',
         'HOST': 'localhost',
         'PORT': '',
     },
