@@ -79,6 +79,7 @@ WSGI_APPLICATION = 'home_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'audiobooks',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
