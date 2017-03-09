@@ -1,5 +1,7 @@
-from django.db import models
 import os
+# import uuid
+
+from django.db import models
 
 
 class Genre(models.Model):
@@ -38,6 +40,7 @@ class AudioBook(models.Model):
 
 
 class AudioFile(models.Model):
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     file_name = models.CharField(max_length=255, verbose_name='path to mp3 file')
     book = models.ForeignKey(AudioBook)
 
