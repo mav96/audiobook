@@ -1,11 +1,17 @@
+import os
+
 from django.shortcuts import render
 from django.http import Http404
 from django.views.generic import TemplateView
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from wsgiref.util import FileWrapper
+
 from audiobooks.models import AudioFile
 from audiobooks.models import AudioBook
-import os
+from audiobooks.models import TorrentFile
+from audiobooks.forms import DocumentForm
 
 
 class HomePageView(TemplateView):
@@ -16,7 +22,7 @@ class HomePageView(TemplateView):
                        'host_url': "%s://%s/listen" % ('https' if request.is_secure() else 'http', request.get_host())})
 
 
-class Search_form(TemplateView):
+class SearchForm(TemplateView):
     def get(self, request, **kwargs):
         return render(request, 'search_form.html')
 
@@ -51,3 +57,27 @@ class Mp3(TemplateView):
         response = HttpResponse(FileWrapper(mp3file), content_type='application/mp3')
         response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(file_name)
         return response
+
+
+def list(request):
+    # Handle file upload
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            newdoc = TorrentFile(docfile=request.FILES['docfile'])
+            newdoc.save()
+
+            # Redirect to the document list after POST
+            return HttpResponseRedirect(reverse('uploads'))
+    else:
+        form = DocumentForm()  # A empty, unbound form
+
+    # Load documents for the list page
+    documents = TorrentFile.objects.all()
+
+    # Render list page with the documents and the form
+    return render(
+        request,
+        'upload.html',
+        {'documents': documents, 'form': form}
+    )

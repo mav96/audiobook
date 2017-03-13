@@ -32,7 +32,8 @@ class AudioBook(models.Model):
     genre = models.ForeignKey(Genre, blank=True, null=True)
     language = models.ForeignKey(Language, blank=True, null=True)
     torrent_hash = models.CharField(max_length=100, blank=True, null=True)
-    torrent_status = models.CharField(max_length=100, default="no") # yes/no/ready/downloading...
+    # yes/no/ready/downloading...
+    torrent_status = models.CharField(max_length=100, default="no")
     to_listen = models.BooleanField(default=False)
 
     def __str__(self):
@@ -49,3 +50,7 @@ class AudioFile(models.Model):
 
     class Meta:
         ordering = ['file_name']
+
+
+class TorrentFile(models.Model):
+    docfile = models.FileField(upload_to='documents/%Y/%m/%d')
