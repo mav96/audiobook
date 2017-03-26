@@ -1,9 +1,14 @@
-import libtorrent as lt
 import os
 import time
 import uuid
 import tempfile
+import logging
+
 import django
+import libtorrent as lt
+
+logger = logging.getLogger(__name__)
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home_server.settings")
 django.setup()
 from django.conf import settings

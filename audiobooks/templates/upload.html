@@ -5,7 +5,7 @@
 {% block content %}
 
         <!-- Upload form. Note enctype attribute! -->
-        <form action="{% url "uploads" %}" method="post" enctype="multipart/form-data">
+        <form action="{% url 'add-torrent' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <p>{{ form.non_field_errors }}</p>
 

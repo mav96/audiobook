@@ -11,10 +11,10 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, FormView
 
 from audiobooks.models import AudioFile, AudioBook
-from audiobooks.forms import DocumentForm, AudioBookForm
+from audiobooks.forms import TorrentFileForm, AudioBookForm
 
 
 class HomePageView(TemplateView):
@@ -53,7 +53,7 @@ class Mp3(TemplateView):
 def list_file(request):
     # Handle file upload
     if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
+        form = TorrentFileForm(request.POST, request.FILES)
         if form.is_valid():
             content_of_file = request.FILES['torrentfile'].read()
         #     newdoc = TorrentFile(docfile=request.FILES['torrentfile'])
@@ -66,7 +66,7 @@ def list_file(request):
         # Redirect to the document list_file after POST
         return HttpResponseRedirect(reverse('uploads'))
     else:
-        form = DocumentForm()  # A empty, unbound form
+        form = TorrentFileForm()  # A empty, unbound form
 
     # Load documents for the list_file page
 
@@ -88,3 +88,17 @@ class AudioBookCreateView(CreateView, FormMixin):
     #     candidate.user = UserProfile.objects.get(user=self.request.user)  # use your own profile here
     #     candidate.save()
     #     return HttpResponseRedirect(self.get_success_url())
+
+
+class TorrentFileUploadView(FormView):
+    form_class = TorrentFileForm
+    template_name = 'upload.html'
+
+    def get_success_url(self):
+        return "/"
+
+    def form_valid(self, form):
+        isvalid = super(TorrentFileUploadView, self).form_valid(form)
+
+    # def form_invalid(self, form):
+
