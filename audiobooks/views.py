@@ -26,24 +26,6 @@ class HomePageView(TemplateView):
                        'host_url': "%s://%s/listen" % ('https' if request.is_secure() else 'http', request.get_host())})
 
 
-class SearchForm(TemplateView):
-    @method_decorator(login_required)
-    def get(self, request, **kwargs):
-        return render(request, 'search_form.html')
-
-
-class Search(TemplateView):
-    @method_decorator(login_required)
-    def get(self, request, **kwargs):
-        if 'q' in request.GET and request.GET['q']:
-            q = request.GET['q']
-            books = AudioBook.objects.filter(title__icontains=q)
-            return render(request, 'search_results.html',
-                          {'books': books, 'query': q})
-        else:
-            return HttpResponse('Please submit a search term.')
-
-
 class Listen(TemplateView):
     @method_decorator(login_required)
     def get(self, request, **kwargs):
