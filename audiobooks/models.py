@@ -28,6 +28,7 @@ class Author(models.Model):
 
 class AudioBook(models.Model):
     title = models.CharField(max_length=100)
+    userid = models.IntegerField(null=False)
     authors = models.ManyToManyField(Author)
     genre = models.ForeignKey(Genre, blank=True, null=True)
     language = models.ForeignKey(Language, blank=True, null=True)
@@ -50,7 +51,3 @@ class AudioFile(models.Model):
 
     class Meta:
         ordering = ['file_name']
-
-
-class TorrentFile(models.Model):
-    docfile = models.FileField(upload_to='documents/%Y/%m/%d')
