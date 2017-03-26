@@ -15,6 +15,7 @@ from audiobooks.forms import DocumentForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
+
 class HomePageView(TemplateView):
     @method_decorator(login_required)
     def get(self, request, **kwargs):
@@ -66,29 +67,29 @@ class Mp3(TemplateView):
 
 torrents_dir = './torrents'
 
+
 @login_required()
-def list(request):
+def list_file(request):
     # Handle file upload
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            contentOfFile = request.FILES['torrentfile'].read()
+            content_of_file = request.FILES['torrentfile'].read()
         #     newdoc = TorrentFile(docfile=request.FILES['torrentfile'])
         #     newdoc.save()
 
             filepath = torrents_dir + "/123"
             with open(filepath, 'wb') as dest:
-                dest.write(contentOfFile)
+                dest.write(content_of_file)
 
-        # Redirect to the document list after POST
+        # Redirect to the document list_file after POST
         return HttpResponseRedirect(reverse('uploads'))
     else:
         form = DocumentForm()  # A empty, unbound form
 
-    # Load documents for the list page
+    # Load documents for the list_file page
 
-
-    # Render list page with the documents and the form
+    # Render list_file page with the documents and the form
     return render(
         request,
         'upload.html',
