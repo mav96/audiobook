@@ -2,7 +2,7 @@ import os
 # import uuid
 
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Genre(models.Model):
     name = models.CharField(max_length=30)
@@ -28,7 +28,7 @@ class Author(models.Model):
 
 class AudioBook(models.Model):
     title = models.CharField(max_length=100)
-    userid = models.IntegerField(null=False)
+    userid = models.ForeignKey(User, unique=True)
     authors = models.ManyToManyField(Author)
     genre = models.ForeignKey(Genre, blank=True, null=True)
     language = models.ForeignKey(Language, blank=True, null=True)

@@ -12,21 +12,26 @@ from audiobooks.models import AudioFile
 from audiobooks.models import AudioBook
 from audiobooks.forms import DocumentForm
 
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 class HomePageView(TemplateView):
+    @method_decorator(login_required)
     def get(self, request, **kwargs):
-        books = AudioBook.objects.all()
+        books = AudioBook.objects.filter(userid=request.user.id)
         return render(request, 'index1.html',
                       {'books': books,
                        'host_url': "%s://%s/listen" % ('https' if request.is_secure() else 'http', request.get_host())})
 
 
 class SearchForm(TemplateView):
+    @method_decorator(login_required)
     def get(self, request, **kwargs):
         return render(request, 'search_form.html')
 
 
 class Search(TemplateView):
+    @method_decorator(login_required)
     def get(self, request, **kwargs):
         if 'q' in request.GET and request.GET['q']:
             q = request.GET['q']
@@ -38,6 +43,7 @@ class Search(TemplateView):
 
 
 class Listen(TemplateView):
+    @method_decorator(login_required)
     def get(self, request, **kwargs):
         book_id = kwargs.get('book_id', None)
         url_list = ["%s://%s/mp3/%s" % ('https' if request.is_secure() else 'http', request.get_host(), url['id']) for
@@ -46,6 +52,7 @@ class Listen(TemplateView):
 
 
 class Mp3(TemplateView):
+    @method_decorator(login_required)
     def get(self, request, **kwargs):
         mp3_id = kwargs.get('mp3_id', None)
         file_name = AudioFile.objects.filter(id=mp3_id).values_list('file_name').get()[0]
@@ -59,6 +66,7 @@ class Mp3(TemplateView):
 
 torrents_dir = './torrents'
 
+@login_required()
 def list(request):
     # Handle file upload
     if request.method == 'POST':
