@@ -1,20 +1,20 @@
 import os
 
+from wsgiref.util import FileWrapper
 from django.shortcuts import render
 from django.http import Http404
 from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from wsgiref.util import FileWrapper
-
-from audiobooks.models import AudioFile
-from audiobooks.models import AudioBook
-from audiobooks.forms import DocumentForm
-
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import FormMixin
+
+from audiobooks.models import AudioFile, AudioBook
+from audiobooks.forms import DocumentForm, AudioBookForm
 
 
 class HomePageView(TemplateView):
@@ -94,3 +94,15 @@ def list_file(request):
         'upload.html',
         {'form': form}
     )
+
+
+class AudioBookCreateView(CreateView, FormMixin):
+    template_name = 'book_add.html'
+    model = AudioBook
+    form_class = AudioBookForm
+
+    # def form_valid(self, form):
+    #     candidate = form.save(commit=False)
+    #     candidate.user = UserProfile.objects.get(user=self.request.user)  # use your own profile here
+    #     candidate.save()
+    #     return HttpResponseRedirect(self.get_success_url())

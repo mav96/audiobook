@@ -1,18 +1,28 @@
 {% extends "base.html" %}
 
+{% load static %}
+<script src="{% static "js/audioPlayer.js" %}"></script>
+
+<script>
+    // loads the audio player
+    audioPlayer();
+</script>
+
 {% block title %}Audiobook server{% endblock %}
 
 {% block head %}
     <style>
-        #playlist{
+        #playlist {
             list-style: none;
         }
-        #playlist li a{
-            color:black;
+
+        #playlist li a {
+            color: black;
             text-decoration: none;
         }
-        #playlist .current-song a{
-            color:blue;
+
+        #playlist .current-song a {
+            color: blue;
         }
     </style>
 {% endblock %}
@@ -24,18 +34,13 @@
     </audio>
     <ul id="playlist">
         {% for url in url_list %}
-        {% if forloop.first %}<li class="current-song">{% else %}<li>{%endif %}
-            <a href="{{ url }}"> {{ forloop.counter }} </a>
+            {% if forloop.first %}
+                <li class="current-song">{% else %}
+                <li>{% endif %}
+        <a href="{{ url }}"> {{ forloop.counter }} </a>
         </li>
         {% endfor %}
     </ul>
-    <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
-    {% load static %}
-    <script src="{% static "css/../static/js/audioPlayer.js" %}"></script>
-    <script>
-        // loads the audio player
-        audioPlayer();
-    </script>
 
 {% endblock %}
 

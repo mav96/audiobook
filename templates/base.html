@@ -56,11 +56,12 @@
                         </li>
 
                     {% endif %}
+
                 </ul>
                 {% if user.is_authenticated %}
-                    <button type="button" class="btn btn-default navbar-btn navbar-right">
+                    <a href="{% url 'uploads' %}" role="button"="button" class="btn btn-default navbar-btn navbar-right">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </button>
+                    </a>
                 {% endif %}
 
             </div>
