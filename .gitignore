@@ -1,3 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 /home_server/settings_local.py
 media
+torrents/*
+cache/*
+audiobooks/migrations/*

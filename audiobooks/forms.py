@@ -4,6 +4,6 @@ from django import forms
 
 
 class DocumentForm(forms.Form):
-    docfile = forms.FileField(
-        label='Select a file'
+    torrentfile = forms.FileField(
+        label='Select a torrent file'
     )

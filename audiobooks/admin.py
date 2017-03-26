@@ -24,5 +24,5 @@ admin.site.register(Language)
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(AudioBook, BookAdmin)
 admin.site.register(AudioFile, FileAdmin)
-admin.site.register(TorrentFile)
+
 

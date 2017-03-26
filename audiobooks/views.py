@@ -10,14 +10,13 @@ from wsgiref.util import FileWrapper
 
 from audiobooks.models import AudioFile
 from audiobooks.models import AudioBook
-from audiobooks.models import TorrentFile
 from audiobooks.forms import DocumentForm
 
 
 class HomePageView(TemplateView):
     def get(self, request, **kwargs):
         books = AudioBook.objects.all()
-        return render(request, 'index.html',
+        return render(request, 'index1.html',
                       {'books': books,
                        'host_url': "%s://%s/listen" % ('https' if request.is_secure() else 'http', request.get_host())})
 
@@ -58,26 +57,32 @@ class Mp3(TemplateView):
         response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(file_name)
         return response
 
+torrents_dir = './torrents'
 
 def list(request):
     # Handle file upload
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            newdoc = TorrentFile(docfile=request.FILES['docfile'])
-            newdoc.save()
+            contentOfFile = request.FILES['torrentfile'].read()
+        #     newdoc = TorrentFile(docfile=request.FILES['torrentfile'])
+        #     newdoc.save()
 
-            # Redirect to the document list after POST
-            return HttpResponseRedirect(reverse('uploads'))
+            filepath = torrents_dir + "/123"
+            with open(filepath, 'wb') as dest:
+                dest.write(contentOfFile)
+
+        # Redirect to the document list after POST
+        return HttpResponseRedirect(reverse('uploads'))
     else:
         form = DocumentForm()  # A empty, unbound form
 
     # Load documents for the list page
-    documents = TorrentFile.objects.all()
+
 
     # Render list page with the documents and the form
     return render(
         request,
         'upload.html',
-        {'documents': documents, 'form': form}
+        {'form': form}
     )
