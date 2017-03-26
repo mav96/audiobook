@@ -3,35 +3,82 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="{{ STATIC_URL }}style.css" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.0.min.js' %}"></script>
     <title>{% block title %}User test{% endblock %}</title>
+    {# Load the tag library #}
+    {% load bootstrap3 %}
+
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 
 <body>
-    <div id="header">
+
+<div id="header">
     {% block header %}
-    <a href="{% url 'index' %}">{% trans "Home" %}</a> |
 
-    {% if user.is_authenticated %}
-        {% trans "Logged in" %}: {{ user.username }} 
-        (<a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a> | 
-        <a href="{% url 'auth_password_change' %}">{% trans "Change password" %}</a>)
-    {% else %}
-       <a href="{% url 'auth_login' %}">{% trans "Log in" %}</a>
-    {% endif %}
-    <hr />
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">TorrAB</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a href="#">
+                                {{ user.username }}
+                            </a>
+
+                        </li>
+
+                        <li>
+                            <a href="{% url 'auth_logout' %}">
+                                <span class="glyphicon glyphicon-log-out"></span> {% trans "Log out" %}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'registration_register' %}">
+                                <span class="glyphicon glyphicon-user"></span> Sign Up
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'auth_login' %}">
+                                <span class="glyphicon glyphicon-log-in"></span> {% trans "Log in" %}
+                            </a>
+                        </li>
+
+                    {% endif %}
+                </ul>
+                {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-default navbar-btn navbar-right">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                {% endif %}
+
+            </div>
+        </nav>
+
     {% endblock %}
-    </div>
 
-    <div id="content">
+</div>
+
+<div id="content" class="container">
     {% block content %}{% endblock %}
-    </div>
+</div>
 
-    <div id="footer">
+<div id="footer">
     {% block footer %}
-        <hr />
+        <hr/>
     {% endblock %}
-    </div>
+</div>
 </body>
 
 </html>

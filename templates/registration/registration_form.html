@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load bootstrap3 %}
+
 
 {% block content %}
-<form method="post" action=".">
-  {% csrf_token %}
-  {{ form.as_p }}
+    <form method="post" action=".">
+        {% csrf_token %}
+        {% bootstrap_form form %}
 
-  <input type="submit" value="{% trans 'Submit' %}" />
-</form>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="{% trans 'Submit' %}"/>
+    </form>
 {% endblock %}

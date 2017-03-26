@@ -3,3 +3,4 @@ psycopg2
 djangorestframework
 django-angular
 django-registration
+django-bootstrap3
