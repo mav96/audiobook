@@ -8,9 +8,10 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home_server.settings")
 django.setup()
 from audiobooks.models import AudioFile
 from audiobooks.models import AudioBook
+from django.conf import settings
 
-torrents_dir = './torrents'
-files_dir = './cache'
+torrents_dir = settings.TORRENTS_DIR
+files_dir = settings.CACHE_AUDIO_DIR
 
 
 def magnet_to_torrent(magnet_uri, book_uid, dst):

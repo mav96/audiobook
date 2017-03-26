@@ -14,6 +14,7 @@ from audiobooks.forms import DocumentForm
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 
 class HomePageView(TemplateView):
@@ -65,8 +66,6 @@ class Mp3(TemplateView):
         response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(file_name)
         return response
 
-torrents_dir = './torrents'
-
 
 @login_required()
 def list_file(request):
@@ -78,7 +77,7 @@ def list_file(request):
         #     newdoc = TorrentFile(docfile=request.FILES['torrentfile'])
         #     newdoc.save()
 
-            filepath = torrents_dir + "/123"
+            filepath = settings.TORRENTS_DIR + "/123"
             with open(filepath, 'wb') as dest:
                 dest.write(content_of_file)
 
