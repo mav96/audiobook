@@ -4,3 +4,5 @@ media
 torrents/*
 cache/*
 audiobooks/migrations/*
+*.log
+.vagrant
