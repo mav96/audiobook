@@ -91,6 +91,7 @@ class AudioBookCreateView(CreateView, FormMixin):
 
 
 class TorrentFileUploadView(FormView):
+    title = "Upload torrent"
     form_class = TorrentFileForm
     template_name = 'upload.html'
 
@@ -100,5 +101,11 @@ class TorrentFileUploadView(FormView):
     def form_valid(self, form):
         isvalid = super(TorrentFileUploadView, self).form_valid(form)
 
+        return isvalid
+    # def get_context_data(self, **kwargs):
+    #     context = super(TorrentFileUploadView, self).get_context_data(
+    #         **kwargs)
+    #     context['title'] = self.title
+    #     return context
     # def form_invalid(self, form):
 

@@ -6,7 +6,15 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
     <script type="text/javascript" src="{% static 'js/jquery-3.2.0.min.js' %}"></script>
-    <title>{% block title %}User test{% endblock %}</title>
+    <title>
+        {% block title %}
+            {% if view.title %}
+                {{  view.title }}
+            {% else %}
+                Audiobook
+            {% endif %}
+        {% endblock %}
+    </title>
     {# Load the tag library #}
     {% load bootstrap3 %}
 

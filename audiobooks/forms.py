@@ -4,10 +4,11 @@ import uuid
 import tempfile
 import logging
 
-# import libtorrent as lt
+import libtorrent as lt
 from django.forms import Form, FileField, ModelForm
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django import forms
 
 from audiobooks.models import AudioBook
 
@@ -15,10 +16,22 @@ from audiobooks.models import AudioBook
 logger = logging.getLogger(__name__)
 
 
-def validate_file(value):
-    import pdb; pdb.set_trace()
+def check_torrent_file(f):
+    e = lt.bdecode(f.read())
+    try:
+        t_info = lt.torrent_info(e)
+    except Exception as err:
+        raise forms.ValidationError("Something went wrong")
+    files = [os.path.splitext(f.path)[1].upper()[1:] for f in t_info.files()]
 
-    return
+    if "MP3" not in files:
+        raise forms.ValidationError("Form doesn't have mp3 files")
+
+
+def validate_file(value):
+    if not hasattr(value, 'file'):
+        raise forms.ValidationError("Doesn't have file")
+    check_torrent_file(value.file)
 
 
 def validate_magnet(value):
@@ -39,7 +52,9 @@ def validate_magnet(value):
 
     torinfo = handle.get_torrent_info()
     torrent_file = lt.create_torrent(torinfo)
-    torrent_path = os.path.join(tempfile.gettempdir(), uuid.uuid4().hex)
+    with tempfile.TemporaryFile() as f:
+        f.write(lt.bencode(torrent_file.generate()))
+        check_torrent_file(f)
 
 
 class TorrentFileForm(Form):
@@ -47,6 +62,10 @@ class TorrentFileForm(Form):
         label='Select a torrent file',
         validators=[validate_file]
     )
+
+    def upload_file(self):
+        # TODO write upload file
+        pass
 
 
 class AudioBookForm(ModelForm):
