@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -94,14 +95,14 @@ class TorrentFileUploadView(FormView):
     title = "Upload torrent"
     form_class = TorrentFileForm
     template_name = 'upload.html'
+    file = ''
 
     def get_success_url(self):
-        return "/"
+        return reverse_lazy('book-add', kwargs={'file_name': self.file})
 
     def form_valid(self, form):
-        isvalid = super(TorrentFileUploadView, self).form_valid(form)
-        form.upload_file()
-        return isvalid
+        self.file = form.upload_file()
+        return super(TorrentFileUploadView, self).form_valid(form)
     # def get_context_data(self, **kwargs):
     #     context = super(TorrentFileUploadView, self).get_context_data(
     #         **kwargs)
