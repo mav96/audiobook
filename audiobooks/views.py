@@ -100,7 +100,7 @@ class TorrentFileUploadView(FormView):
 
     def form_valid(self, form):
         isvalid = super(TorrentFileUploadView, self).form_valid(form)
-
+        form.upload_file()
         return isvalid
     # def get_context_data(self, **kwargs):
     #     context = super(TorrentFileUploadView, self).get_context_data(

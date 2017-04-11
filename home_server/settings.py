@@ -132,7 +132,8 @@ STATICFILES_DIRS = [
 ]
 
 CACHE_AUDIO_DIR = './cache'
-TORRENTS_DIR = './torrents'
+# TORRENTS_DIR = './torrents'
+TORRENTS_DIR = os.path.join(BASE_DIR, 'torrents')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

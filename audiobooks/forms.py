@@ -64,8 +64,11 @@ class TorrentFileForm(Form):
     )
 
     def upload_file(self):
-        # TODO write upload file
-        pass
+        data = self.clean()
+        path = os.path.join(settings.TORRENTS_DIR, uuid.uuid4().hex)
+        with open(path, "w+b") as f:
+            for chunk in data['torrentfile'].chunks():
+                f.write(chunk)
 
 
 class AudioBookForm(ModelForm):
