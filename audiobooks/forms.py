@@ -1,6 +1,6 @@
 import os
 import time
-import uuid
+import hashlib
 import tempfile
 import logging
 
@@ -65,10 +65,17 @@ class TorrentFileForm(Form):
 
     def upload_file(self):
         data = self.clean()
-        path = os.path.join(settings.TORRENTS_DIR, uuid.uuid4().hex)
-        with open(path, "w+b") as f:
+        file_name = ''
+        with tempfile.TemporaryFile() as f:
             for chunk in data['torrentfile'].chunks():
                 f.write(chunk)
+            f.seek(0)
+            content = f.read()
+            file_name = hashlib.md5(content).hexdigest()
+            path = os.path.join(settings.TORRENTS_DIR, file_name)
+            with open(path, "w+b") as ff:
+                ff.write(content)
+        return file_name
 
 
 class AudioBookForm(ModelForm):
