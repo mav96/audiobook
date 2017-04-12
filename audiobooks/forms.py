@@ -58,6 +58,7 @@ def validate_magnet(value):
 
 
 class TorrentFileForm(Form):
+    # TODO Add case if torrent file already exists
     torrentfile = FileField(
         label='Select a torrent file',
         validators=[validate_file]
