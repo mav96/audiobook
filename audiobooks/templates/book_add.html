@@ -2,13 +2,30 @@
 {% load i18n %}
 {% load bootstrap3 %}
 
+{% block head %}
+    {{ wizard.form.media }}
+{% endblock %}
 
 {% block content %}
-    <form class="form-signin" method="post" action=".">
+    <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+    <form form="form-signin" action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% bootstrap_form form %}
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="{% trans 'Save' %}"/>
+        {{ wizard.management_form }}
+        {% if wizard.form.forms %}
+            {{ wizard.form.management_form }}
+            {% for form in wizard.form.forms %}
+                {% bootstrap_form form %}
+            {% endfor %}
+        {% else %}
+            {% bootstrap_form wizard.form %}
+        {% endif %}
+        {% if wizard.steps.prev %}
+            <button name="wizard_goto_step" type="submit"
+                    value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+            <button name="wizard_goto_step" type="submit"
+                    value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+        {% endif %}
+        <input class="btn btn-primary" type="submit"
+               value="{% trans 'Save' %}"/>
     </form>
-
-
 {% endblock %}

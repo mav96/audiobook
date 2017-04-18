@@ -4,3 +4,4 @@ djangorestframework
 django-angular
 django-registration
 django-bootstrap3
+django-formtools

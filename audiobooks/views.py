@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, FormView
+from django.core.files.storage import FileSystemStorage
+from formtools.wizard.views import SessionWizardView
 
 from audiobooks.models import AudioFile, AudioBook
 from audiobooks.forms import TorrentFileForm, AudioBookForm
@@ -91,18 +93,45 @@ class AudioBookCreateView(CreateView, FormMixin):
     #     return HttpResponseRedirect(self.get_success_url())
 
 
-class TorrentFileUploadView(FormView):
+class TorrentFileUploadView(SessionWizardView):
+    form_list = [TorrentFileForm, AudioBookForm]
     title = "Upload torrent"
-    form_class = TorrentFileForm
-    template_name = 'upload.html'
-    file = ''
+    # form_class = TorrentFileForm
+    template_name = 'book_add.html'
+    # file = ''os.path.join(settings.TORRENTS_DIR, 'tmp')
+    file_storage = FileSystemStorage(location=os.path.join(settings.TORRENTS_DIR, 'tmp'))
 
-    def get_success_url(self):
-        return reverse_lazy('book-add', kwargs={'file_name': self.file})
+    def process_step(self, form):
+        step_data = self.get_form_step_data(form)
+        if self.steps.current == '0':
+            import pdb;pdb.set_trace()
 
-    def form_valid(self, form):
-        self.file = form.upload_file()
-        return super(TorrentFileUploadView, self).form_valid(form)
+        return step_data
+
+    def process_step_files(self, form):
+        return self.get_form_step_files(form)
+
+    def done(self, form_list, **kwargs):
+
+        # do_something_with_the_form_data(form_list)
+        return HttpResponseRedirect('/')
+
+    def get_form(self, step=None, data=None, files=None):
+        form = super(TorrentFileUploadView, self).get_form(step, data, files)
+
+        # determine the step if not given
+        if step is None:
+            step = self.steps.current
+
+        if step == '1':
+            form.user = self.request.user
+        return form
+    # def get_success_url(self):
+    #     return reverse_lazy('book-add', kwargs={'file_name': self.file})
+    #
+    # def form_valid(self, form):
+    #     self.file = form.upload_file()
+    #     return super(TorrentFileUploadView, self).form_valid(form)
     # def get_context_data(self, **kwargs):
     #     context = super(TorrentFileUploadView, self).get_context_data(
     #         **kwargs)
