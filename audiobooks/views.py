@@ -1,5 +1,6 @@
 import os
 
+import libtorrent as lt
 from wsgiref.util import FileWrapper
 from django.shortcuts import render
 from django.http import Http404
@@ -18,6 +19,27 @@ from formtools.wizard.views import SessionWizardView
 
 from audiobooks.models import AudioFile, AudioBook
 from audiobooks.forms import TorrentFileForm, AudioBookForm
+
+
+def check_mp3(torrent_file):
+    torrent_info = dict()
+    try:
+        with open(torrent_file, 'rb') as f:
+            e = lt.bdecode(f.read())
+            torinfo = lt.torrent_info(e)
+            torrent_info['name'] = torinfo.name()
+            torrent_info['hash'] = torinfo.info_hash()
+            torrent_info['num_files'] = torinfo.num_files()
+            torrent_info['mp3_size'] = 0
+            torrent_info['size'] = 0
+            for filename in torinfo.files():
+                torrent_info['size'] += filename.size
+                if os.path.splitext(filename.path)[1].upper()[1:] == "MP3":
+                    torrent_info['mp3_size'] += filename.size
+            torrent_info['path'] = os.path.abspath(torrent_file)
+            return torrent_info
+    except Exception as err:
+        return None
 
 
 class HomePageView(TemplateView):
@@ -81,40 +103,13 @@ def list_file(request):
     )
 
 
-class AudioBookCreateView(CreateView, FormMixin):
-    template_name = 'book_add.html'
-    model = AudioBook
-    form_class = AudioBookForm
-
-    # def form_valid(self, form):
-    #     candidate = form.save(commit=False)
-    #     candidate.user = UserProfile.objects.get(user=self.request.user)  # use your own profile here
-    #     candidate.save()
-    #     return HttpResponseRedirect(self.get_success_url())
-
-
 class TorrentFileUploadView(SessionWizardView):
     form_list = [TorrentFileForm, AudioBookForm]
     title = "Upload torrent"
-    # form_class = TorrentFileForm
     template_name = 'book_add.html'
-    # file = ''os.path.join(settings.TORRENTS_DIR, 'tmp')
-    file_storage = FileSystemStorage(location=os.path.join(settings.TORRENTS_DIR, 'tmp'))
-
-    def process_step(self, form):
-        step_data = self.get_form_step_data(form)
-        if self.steps.current == '0':
-            import pdb;pdb.set_trace()
-
-        return step_data
-
-    def process_step_files(self, form):
-        return self.get_form_step_files(form)
-
-    def done(self, form_list, **kwargs):
-
-        # do_something_with_the_form_data(form_list)
-        return HttpResponseRedirect('/')
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.TORRENTS_DIR, 'tmp')
+    )
 
     def get_form(self, step=None, data=None, files=None):
         form = super(TorrentFileUploadView, self).get_form(step, data, files)
@@ -124,18 +119,9 @@ class TorrentFileUploadView(SessionWizardView):
             step = self.steps.current
 
         if step == '1':
-            form.user = self.request.user
+            form_step0 = self.get_cleaned_data_for_step('0')
+            info_torrent = check_mp3(form_step0['torrentfile'].file.name)
+            form.initial = {'title': info_torrent['name']}
         return form
-    # def get_success_url(self):
-    #     return reverse_lazy('book-add', kwargs={'file_name': self.file})
-    #
-    # def form_valid(self, form):
-    #     self.file = form.upload_file()
-    #     return super(TorrentFileUploadView, self).form_valid(form)
-    # def get_context_data(self, **kwargs):
-    #     context = super(TorrentFileUploadView, self).get_context_data(
-    #         **kwargs)
-    #     context['title'] = self.title
-    #     return context
-    # def form_invalid(self, form):
+
 
