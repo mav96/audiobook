@@ -29,7 +29,7 @@ class Author(models.Model):
 
 class AudioBook(models.Model):
     title = models.CharField(max_length=100)
-    userid = models.ForeignKey(User)
+    user = models.ForeignKey(User)
     authors = models.ManyToManyField(Author)
     genre = models.ForeignKey(Genre, blank=True, null=True)
     language = models.ForeignKey(Language, blank=True, null=True)

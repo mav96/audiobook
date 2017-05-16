@@ -5,7 +5,7 @@ import tempfile
 import logging
 
 import libtorrent as lt
-from django.forms import Form, FileField, ModelForm
+from django.forms import Form, FileField, ModelForm, HiddenInput
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django import forms
