@@ -2,7 +2,9 @@ import pika
 import json
 import sys
 
+
 class BookStatus():
+
     def __init__(self, amqp_url):
 #        credentials = pika.PlainCredentials('myprojectuser', 'password')
 #        self.connection = pika.BlockingConnection(pika.ConnectionParameters('mqserver',5672,'/',credentials))
@@ -31,6 +33,7 @@ class BookStatus():
             self.connection.process_data_events()
         return self.response
 
+
 def main():
     data = {}
     data['book_id'] = sys.argv[1] or '999'
@@ -44,6 +47,6 @@ def main():
     print(" [.] Got %s" % response)
 
 if __name__ == '__main__':
-        main()
+    main()
 
 
