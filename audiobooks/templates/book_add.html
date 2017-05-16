@@ -20,9 +20,9 @@
             {% bootstrap_form wizard.form %}
         {% endif %}
         {% if wizard.steps.prev %}
-            <button name="wizard_goto_step" type="submit"
+            <button name="wizard_goto_step" type="submit" class="btn btn-primary"
                     value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
-            <button name="wizard_goto_step" type="submit"
+            <button name="wizard_goto_step" type="submit" class="btn btn-primary"
                     value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
         {% endif %}
         <input class="btn btn-primary" type="submit"

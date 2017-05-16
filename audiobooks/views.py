@@ -7,6 +7,7 @@ from django.http import Http404
 from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -45,7 +46,7 @@ def check_mp3(torrent_file):
 class HomePageView(TemplateView):
     @method_decorator(login_required)
     def get(self, request, **kwargs):
-        books = AudioBook.objects.filter(userid=request.user.id)
+        books = AudioBook.objects.filter(user=request.user)
         return render(request, 'index1.html',
                       {'books': books,
                        'host_url': "%s://%s/listen" % ('https' if request.is_secure() else 'http', request.get_host())})
@@ -103,7 +104,7 @@ def list_file(request):
     )
 
 
-class TorrentFileUploadView(SessionWizardView):
+class TorrentFileUploadView(LoginRequiredMixin, SessionWizardView):
     form_list = [TorrentFileForm, AudioBookForm]
     title = "Upload torrent"
     template_name = 'book_add.html'
@@ -119,9 +120,15 @@ class TorrentFileUploadView(SessionWizardView):
             step = self.steps.current
 
         if step == '1':
-            form_step0 = self.get_cleaned_data_for_step('0')
-            info_torrent = check_mp3(form_step0['torrentfile'].file.name)
-            form.initial = {'title': info_torrent['name']}
+            tmp_file =self.storage.get_step_files('0').get('0-torrentfile').file.name
+            info_torrent = check_mp3(tmp_file)
+            form.initial = {
+                'title': info_torrent['name']
+            }
+            form.instance.user = self.request.user
         return form
 
-
+    def done(self, form_list, form_dict, **kwargs):
+        form_dict['0'].upload_file()
+        form_dict['1'].save()
+        return HttpResponseRedirect(reverse('index'))
